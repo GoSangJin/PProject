@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}" xmlns:margin-left="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>회원정보</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link href="/assets/img/favicon.png" rel="icon">
+    <link href="/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="/assets/vendor/aos/aos.css" rel="stylesheet">
+    <link href="/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+    <link href="/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+
+    <!-- Main CSS File -->
+    <link href="/assets/css/main.css" rel="stylesheet">
+
+    <style>
+        /* 기본 레이아웃 스타일 (화면이 넓을 때) */
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin: 0;
+            width: 100%;
+        }
+
+        .form-group label {
+            width: 10rem; /* 상대 단위로 변경 */
+            margin-right: 1rem;
+            font-size: 1rem;
+        }
+
+        /* 폼을 중앙에 배치 */
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .form-control, .btn {
+            font-size: 1rem;
+        }
+
+        .form-control {
+            width: 18rem; /* 기본 너비를 상대 단위로 설정 */
+            display: inline-block;
+        }
+
+        .btn {
+            height: 2.5rem;
+            margin: 0 0.5rem;
+            min-width: 7rem; /* 버튼 최소 너비를 상대 단위로 설정 */
+        }
+
+        .help-text {
+            margin-top: 1rem;
+            margin-left: 1rem;
+            color: #999;
+            align-self: flex-start;
+            font-size: small;
+            font-weight: normal;
+            line-height: 1rem;
+        }
+
+        /* 반응형 레이아웃 (화면이 줄어들 때) */
+        @media (max-width: 1400px) {
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start; /* 왼쪽 정렬 */
+                width: 100%;
+            }
+
+            .help-text {
+                margin-left: 0;
+                display: block;
+            }
+
+            .form-control {
+                width: 100%; /* 모든 입력 필드의 너비를 100%로 설정 */
+                margin: 0; /* 기본 여백 제거 */
+            }
+
+            .button-group {
+                flex-direction: row;
+                width: 100%;
+            }
+
+            label {
+                margin-bottom: 0.5rem;
+                width: 100%;
+            }
+
+            .d-flex {
+                display: flex;
+                gap: 0.5rem;
+                margin: 0;
+            }
+
+            /* 좌측 정렬을 위한 공통 설정 */
+            #address {
+                width: 100%; /* 도로명주소 필드 너비를 100%로 설정 */
+                align-self: flex-start; /* 왼쪽 정렬 */
+                gap: 0.2rem; /* 각 주소 필드 간 간격 추가 */
+            }
+
+            /* 우편번호 및 주소찾기 버튼과 도로명주소를 같은 행에 배치 */
+            #postcode {
+                margin-left: 10px; /* 반응형에서만 왼쪽 마진 추가 */
+            }
+
+            /* 도로명주소와 상세주소, 참고주소를 다음 행으로 나열 */
+            .address-fields {
+                display: flex;
+                flex-direction: column; /* 세로 방향으로 정렬 */
+                width: 100%;
+                gap: 0.2rem; /* 각 주소 필드 간 간격 추가 */
+                margin-left: 10px;
+            }
+
+            /* 상세주소와 참고주소를 수평 정렬하기 위해 */
+            .address-fields > div {
+                display: flex;
+                justify-content: space-between; /* 필드 사이에 공간 배분 */
+                width: 100%; /* 전체 너비에 맞게 설정 */
+            }
+
+            /* 우편번호 입력 필드 여백 */
+            #postcode {
+                margin-left: 10px; /* 반응형에서만 왼쪽 마진 추가 */
+            }
+
+            .responsive-span {
+                font-size: 0.8rem; /* 원하는 크기로 조정 */
+                white-space: nowrap; /* 텍스트가 한 줄로 나오게 설정 */
+                overflow: hidden; /* 넘치는 내용 숨기기 */
+                text-overflow: ellipsis; /* 넘칠 경우 생략 기호(...) 표시 */
+            }
+
+            h1 {
+                font-size: 0.5rem; /* h1 크기 조정 (조금 작게) */
+            }
+        }
+
+
+
+    </style>
+
+
+
+</head>
+
+<body class="services-page">
+
+<div layout:fragment="content">
+    <main class="main">
+
+        <!-- Page Title -->
+        <div class="page-title" style="background-color: #003300; margin-bottom: 30px;">
+            <div class="container text-center">
+                <h1 style="color: white;">회원가입</h1>
+                <nav class="breadcrumbs">
+                    <div>
+                        <span class="responsive-span"  style="color: white;">회원으로 가입 하시면 다양한 서비스를 조회 및 편리하게 이용하실 수 있습니다.</span>
+                    </div>
+                </nav>
+            </div>
+        </div>
+
+        <!-- 회원가입 등록 -->
+        <section id="services-2" class="services-2 section">
+
+            <div class="container mb-3">
+                <div class="row justify-content-center" data-aos="fade-up">
+                    <div class="col-md-8 col-lg-8">
+
+                        <h2 style="font-weight: bold; color: #222;  line-height: 4rem;">회원 기본정보</h2>
+                        <span style="font-weight: bold; color: #222;  line-height: 1rem;">
+              <span style="color: red;">*</span> 는 필수입력 사항입니다. 빠짐없이 기재하시기 바랍니다.
+            </span>
+                        <!-- 하단 구분선 -->
+                        <hr style="border: 1px solid #111;">
+
+                        <!-- 오류 메시지 표시 -->
+                        <div th:if="${errorMessage}" class="alert alert-danger">
+                            <span th:text="${errorMessage}"></span>
+                        </div>
+
+                        <form th:action="@{/User/Register}" th:object="${data}" method="post">
+                            <!--아이디 입력-->
+                            <div class="form-group" style="font-weight: bold;">
+                                <label for="userid">아이디 <span style="color: red;">*</span></label>
+                                <input type="text" id="userid" name="userid" class="form-control" th:field="*{userid}" required
+                                       pattern=".{8,}" title="아이디는 8글자 이상이어야 합니다."
+                                       style="resize: none; overflow: auto; font-size: small;" placeholder="아이디를 입력하세요"
+                                       onfocus="this.placeholder = ''" onblur="this.placeholder = '아이디를 입력하세요'">
+                                <span class="help-text">영문 또는 숫자포함 8글자 이상</span>
+                            </div>
+                            <!--하단 구분선-->
+                            <hr style="height: 0.6px; background-color: #888; border: none; width: 100%; display: block; margin: 0; padding: 0;">
+
+                            <!--비밀번호 입력-->
+                            <div class="form-group" style="font-weight: bold;">
+                                <label for="password">비밀번호 <span style="color: red;">*</span></label>
+                                <input type="password" id="password" name="password" class="form-control" th:field="*{password}" required
+                                       pattern="(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}"
+                                       title="비밀번호는 8글자 이상이어야 하며, 숫자와 특수문자가 포함되어야 합니다."
+                                       style="resize: none; overflow: auto; font-size: small;" placeholder="비밀번호를 입력하세요"
+                                       onfocus="this.placeholder = ''" onblur="this.placeholder = '비밀번호를 입력하세요'">
+                                <span class="help-text">8글자 이상, 영어 대소문자, 숫자, 특수문자 중 3가지 이상 조합</span>
+                            </div>
+                            <!--하단 구분선-->
+                            <hr style="height: 0.6px; background-color: #888; border: none; width: 100%; display: block; margin: 0; padding: 0;">
+
+                            <!--이메일 입력-->
+                            <!--이메일 입력-->
+                            <div class="form-group" style="font-weight: bold;">
+                                <label for="emailId">이메일 <span style="color: red;">*</span></label>
+                                <div class="d-flex" style="gap: 0.3rem;">
+                                    <input type="text" id="emailId" name="emailId" class="form-control" placeholder="이메일 아이디"
+                                           style="width: 30%;" required>
+                                    <span>@</span>
+                                    <input list="emailDomains" id="emailDomain" name="emailDomain" class="form-control"
+                                           placeholder="naver / google / 직접입력" style="width: 30%;" required>
+                                    <datalist id="emailDomains">
+                                        <option value="naver">
+                                        <option value="kakao">
+                                        <option value="google">
+                                        <option value="gmail">
+                                    </datalist>
+                                    <span>.</span>
+                                    <input type="text" id="emailTLD" name="emailTLD" class="form-control"
+                                           placeholder="com" style="width: 20%;" value="com" required>
+                                </div>
+                            </div>
+
+                            <!-- 이메일 주소를 합쳐서 전송하기 위한 숨김 필드 -->
+                            <input type="hidden" id="email" name="email" th:field="*{email}">
+                            <!--하단 구분선-->
+                            <hr style="height: 0.6px; background-color: #888; border: none; width: 100%; display: block; margin: 0; padding: 0;">
+
+                            <!--이름 입력-->
+                            <div class="form-group" style="font-weight: bold;">
+                                <label for="username">이름 <span style="color: red;">*</span></label>
+                                <input type="text" id="username" name="username" class="form-control" th:field="*{username}" required
+                                       style="resize: none; overflow: auto; font-size: small;" placeholder="이름을 입력하세요"
+                                       onfocus="this.placeholder = ''" onblur="this.placeholder = '이름을 입력하세요'">
+                            </div>
+                            <!--하단 구분선-->
+                            <hr style="height: 0.6px; background-color: #888; border: none; width: 100%; display: block; margin: 0; padding: 0;">
+
+                            <!-- 생년월일 입력 -->
+                            <div class="form-group" style="font-weight: bold;">
+                                <label for="birthday">생년월일 <span style="color: red;">*</span></label>
+                                <input type="text" id="birthday" name="birthday" class="form-control" th:field="*{birthday}" required
+                                       pattern="^\d{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$"
+                                       title="생년월일은 YYMMDD 형식으로 입력하세요. (예: 991010)"
+                                       style="resize: none; overflow: auto; font-size: small;" placeholder="생년월일을 입력하세요"
+                                       onfocus="this.placeholder = ''" onblur="this.placeholder = '생년월일을 입력하세요'">
+                                <span class="help-text">생년월일은 YYMMDD 형식으로 입력하세요.</span>
+                            </div>
+                            <!--하단 구분선-->
+                            <hr style="height: 0.6px; background-color: #888; border: none; width: 100%; display: block; margin: 0; padding: 0;">
+
+                            <!-- 주소 -->
+                            <div class="form-group" style="font-weight: bold; gap: 0.5rem;">
+                                <label for="address">주소 <span style="color: red;">*</span></label>
+                                <div class="d-flex flex-column" style="margin-left: -10px;"> <!-- flex-direction을 column으로 설정 -->
+                                    <div class="d-flex align-items-center mb-2" style="flex-direction: row;">
+                                        <input type="text" id="postcode" name="postcode" class="form-control me-2" th:field="*{postcode}" required
+                                               style="resize: none; overflow: auto; font-size: small; width: 290px;" placeholder="우편번호"
+                                               onfocus="this.placeholder = ''" onblur="this.placeholder = '우편번호'">
+                                        <input type="button" class="btn btn-secondary btn-sm" onclick="execDaumPostcode()"
+                                               value="주소검색" style="font-size: 0.75rem; border-radius: 0.6rem; height: 30px;">
+                                    </div>
+                                    <div class="d-flex flex-column address-fields"> <!-- address-fields 클래스를 flex-column으로 수정 -->
+                                        <input type="text" id="address" name="address" class="form-control mb-2" th:field="*{address}" required
+                                               style="resize: none; overflow: auto; font-size: small;" placeholder="도로명주소"
+                                               onfocus="this.placeholder = ''" onblur="this.placeholder = '도로명주소'">
+                                        <div class="d-flex mb-2" style="width: 100%;"> <!-- 상세주소와 참고주소를 수평으로 정렬하기 위해 d-flex 추가 -->
+                                            <input type="text" id="detailAddress" name="detailAddress" class="form-control me-3" th:field="*{detailAddress}"
+                                                   style="resize: none; overflow: auto; font-size: small; margin-right: auto;" placeholder="상세주소"
+                                                   onfocus="this.placeholder = ''" onblur="this.placeholder = '상세주소'">
+                                            <input type="text" id="extraAddress" name="extraAddress" class="form-control" th:field="*{extraAddress}"
+                                                   style="resize: none; overflow: auto; font-size: small; width: auto;" placeholder="참고주소"
+                                                   onfocus="this.placeholder = ''" onblur="this.placeholder = '참고주소'">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--하단 구분선-->
+                            <hr style="height: 0.6px; background-color: #888; border: none; width: 100%; display: block; margin: 0; padding: 0;">
+
+                            <div class="d-flex mt-5 button-group" style="width: 100%; justify-content: flex-end;">
+                                <button type="submit" class="btn btn-success rounded-pill mb-2" style="min-width: 110px;">회원가입</button>
+                                <a th:href="@{/Login}" class="btn btn-secondary rounded-pill mb-2" style="display: inline-block; text-align: center; min-width: 110px;">취소</a>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Daum API -->
+    <script th:inline="javascript" src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script th:inline="javascript">
+        function execDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    var addr = '';
+                    var extraAddr = '';
+
+                    if (data.userSelectedType === 'R') {
+                        addr = data.roadAddress;
+                    } else {
+                        addr = data.jibunAddress;
+                    }
+
+                    if(data.userSelectedType === 'R'){
+                        if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                            extraAddr += data.bname;
+                        }
+                        if(data.buildingName !== '' && data.apartment === 'Y'){
+                            extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                        }
+                        if(extraAddr !== ''){
+                            extraAddr = ' (' + extraAddr + ')';
+                        }
+                        document.getElementById("extraAddress").value = extraAddr;
+                    } else {
+                        document.getElementById("extraAddress").value = '';
+                    }
+
+                    document.getElementById('postcode').value = data.zonecode;
+                    document.getElementById("address").value = addr;
+                    document.getElementById("detailAddress").focus();
+                }
+            }).open();
+        }
+    </script>
+
+<!-- 이메일 합쳐주는 스크립트 -->
+    <script th:inline="javascript">
+        document.querySelector("form").addEventListener("submit", function(e) {
+            const id = document.getElementById("emailId").value.trim();
+            const domain = document.getElementById("emailDomain").value.trim();
+            const tld = document.getElementById("emailTLD").value.trim();
+
+            const emailField = document.getElementById("email");
+
+            if (id && domain && tld) {
+                emailField.value = `${id}@${domain}.${tld}`;
+            } else {
+                emailField.value = ""; // 하나라도 빠지면 빈 값
+            }
+        });
+    </script>
+</div>
+</body>
+
+</html>

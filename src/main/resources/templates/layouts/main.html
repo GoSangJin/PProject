@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <th:block layout:fragment="css"></th:block>
+    <style>
+        /* 본문 상단 여백 조정 */
+        .main {
+            margin-bottom: 170px; /* 본문과 푸터 사이의 여백 조정 */
+            padding-top: 30px; /* 본문 상단 여백 조정 (필요에 따라 조정) */
+        }
+
+    </style>
+</head>
+<body>
+<!--헤더-->
+<div th:replace="~{fragments/header::header}"></div>
+<!--본문-->
+<div layout:fragment="content"></div>
+<!--푸터-->
+<div th:replace="~{fragments/footer::footer}"></div>
+
+<!-- Scroll Top -->
+<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+<!-- Preloader -->
+<div id="preloader"></div>
+
+<!-- Vendor JS Files -->
+<script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/vendor/php-email-form/validate.js"></script>
+<script src="/assets/vendor/aos/aos.js"></script>
+<script src="/assets/vendor/glightbox/js/glightbox.min.js"></script>
+<script src="/assets/vendor/purecounter/purecounter_vanilla.js"></script>
+<script src="/assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+<script src="/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+<script src="/assets/vendor/swiper/swiper-bundle.min.js"></script>
+
+<!-- Main JS File -->
+<script src="/assets/js/main.js"></script>
+<th:block layout:fragment="script">
+    <!--disease 이미지 변경-->
+    <script>
+        function changeMainImage(src) {
+            var mainImage = document.getElementById('mainImage');
+            if (mainImage) {
+                mainImage.src = src;
+            }
+        }
+    </script>
+    <!--daum API-->
+    <script th:inline="javascript" src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script th:inline="javascript">
+        function execDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                    // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                    // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                    var addr = ''; // 주소 변수
+                    var extraAddr = ''; // 참고항목 변수
+
+                    //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                    if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                        addr = data.roadAddress;
+                    } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                        addr = data.jibunAddress;
+                    }
+
+                    // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+                    if(data.userSelectedType === 'R'){
+                        // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                        // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                        if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                            extraAddr += data.bname;
+                        }
+                        // 건물명이 있고, 공동주택일 경우 추가한다.
+                        if(data.buildingName !== '' && data.apartment === 'Y'){
+                            extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                        }
+                        // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                        if(extraAddr !== ''){
+                            extraAddr = ' (' + extraAddr + ')';
+                        }
+                        // 조합된 참고항목을 해당 필드에 넣는다.
+                        document.getElementById("extraAddress").value = extraAddr;
+
+                    } else {
+                        document.getElementById("extraAddress").value = '';
+                    }
+
+                    // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                    document.getElementById('postcode').value = data.zonecode;
+                    document.getElementById("address").value = addr;
+                    // 커서를 상세주소 필드로 이동한다.
+                    document.getElementById("detailAddress").focus();
+                }
+            }).open();
+        }
+    </script>
+    <script>
+        function openCommentReportWindow(commentId) {
+            console.log("comment ID:", commentId); // 콘솔에 출력하여 확인
+            const url = '/board/commentReport?commentId=' + commentId;
+            window.open(url, '신고하기', 'width=500,height=350');
+        }
+    </script>
+
+    <script>
+        function openReportWindow(boardId) {
+            console.log("Board ID:", boardId); // 콘솔에 출력하여 확인
+            const url = '/board/report?boardId=' + boardId;
+            window.open(url, '신고하기', 'width=500,height=600');
+        }
+    </script>
+    <!--comment limit-->
+    <script>
+        function checkLength(textarea) {
+            const maxLength = 200;
+            if (textarea.value.length > maxLength) {
+                textarea.value = textarea.value.substring(0, maxLength);
+                alert('댓글은 최대 ' + maxLength + '자까지 입력할 수 있습니다.');
+            }
+        }
+    </script>
+
+    <!--유튜브 썸네일-->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // 모든 eventImg 요소를 선택
+            document.querySelectorAll(".card-img-top").forEach(function(img) {
+                // 데이터 속성에서 URL을 가져옵니다
+                const url = img.getAttribute("data-url");
+                // 비디오 ID를 추출합니다
+                const videoId = getYouTubeVideoId(url);
+                // 비디오 ID가 있는 경우 썸네일 URL을 설정합니다
+                if (videoId) {
+                    img.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+                }
+            });
+
+            // YouTube 비디오 ID 추출 함수
+            function getYouTubeVideoId(url) {
+                const regex = /(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:watch\?v=|embed\/|v\/|.+\?v=|.+\/|.*[?&]v=)([a-zA-Z0-9_-]{11})|(?:https?:\/\/)?(?:www\.)?youtu\.be\/([a-zA-Z0-9_-]{11})/;
+                const match = url.match(regex);
+                return match ? (match[1] || match[2]) : null;
+            }
+        });
+    </script>
+
+    <script>
+        function previewImage(input) {
+            var file = input.files[0];
+            var imageContainer = document.getElementById('imageContainer');
+            var currentImage = document.getElementById('currentImage');
+
+            if (file) {
+                // Hide current image if file is selected
+                imageContainer.style.display = 'block';
+
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    // Update image src to the new file
+                    currentImage.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                // If no file selected, hide image container
+                imageContainer.style.display = 'none';
+            }
+        }
+    </script>
+
+
+
+    <script>
+        function setReportId(reportId){
+            document.getElementById('reportId').value = reportId;
+        }
+        function openModal(reportId) {
+
+            document.getElementById('reportId').value = reportId;
+            document.getElementById('suspensionModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('suspensionModal').style.display = 'none';
+        }
+    </script>
+
+
+
+
+
+
+
+</th:block>
+</body>
+<!--레이아웃은 각작업별로 분리된 html을 배치할 위치를 지정-->

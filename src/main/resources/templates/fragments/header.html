@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://ww.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>메인페이지 헤더</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
+</head>
+<body>
+<div th:fragment="header">
+    <header id="header" class="header sticky-top" style="padding-bottom: 10px;">
+
+        <!-- 1) 상단 줄: 주요사이트 바로가기 드롭다운 (변경 없음) -->
+        <div class="container-fluid container-xl d-flex justify-content-end py-2 px-2">
+            <div class="dropdown">
+                <a href="#" class="btn btn-outline-success rounded-pill dropdown-toggle"
+                   data-bs-toggle="dropdown" aria-expanded="false" style="font-size:0.8rem;">
+                    주요사이트 바로가기
+                </a>
+                <ul class="dropdown-menu" style="font-size:0.8rem;">
+                    <li><a class="dropdown-item" href="https://www.rda.go.kr/" target="_blank">농촌진흥청 바로가기↗</a></li>
+                    <li><a class="dropdown-item" href="https://www.nongsaro.go.kr/" target="_blank">농사로 바로가기↗</a></li>
+                    <li><a class="dropdown-item" href="https://www.greendaero.go.kr/" target="_blank">그린대로 바로가기↗</a></li>
+                    <li><a class="dropdown-item" href="https://ncpms.rda.go.kr/" target="_blank">농작물병충해관리↗</a></li>
+                    <li><a class="dropdown-item" href="https://www.koreacpa.org/" target="_blank">한국작물보호협회↗</a></li>
+                    <li><a class="dropdown-item" href="https://agriedu.net/" target="_blank">농업교육포털↗</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 2) 하단 줄: 로고 · (메뉴 + 마이페이지) -->
+        <div class="container-fluid container-xl d-flex align-items-center justify-content-between py-2"> <!-- 변경: justify-content-between -->
+            <!-- 로고 (왼쪽 고정) -->
+            <a th:href="@{/}" class="logo d-flex align-items-center">
+                <img src="/assets/img/main/green_logo.svg" alt="로고" style="height:50px;">
+            </a>
+
+            <!-- 메뉴와 마이페이지를 함께 묶어 오른쪽으로 정렬 -->
+            <div class="d-flex align-items-center"> <!-- 변경: 그룹 래퍼 추가 -->
+                <!-- 네비게이션 메뉴 -->
+                <nav id="navmenu" class="navmenu me-3">
+                    <ul>
+                        <li sec:authorize="hasAnyRole('ROLE_admin','ROLE_master')">
+                            <a th:href="@{/admin/user_info}">관리/운영자</a>
+                        </li>
+                        <li><a th:href="@{/guide/info}">가이드</a></li>
+                        <li class="dropdown">
+                            <a href="#"><span>체험/행사</span><i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                            <ul>
+                                <li><a th:href="@{/experience/list}">체험정보</a></li>
+                                <li><a th:href="@{/event/list}">행사정보</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#"><span>종합정보</span><i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                            <ul>
+                                <li><a th:href="@{/plantation/list}">재배정보</a></li>
+                                <li><a th:href="@{/document/list}">공문정보</a></li>
+                                <li><a th:href="@{/fruit/list}">병해도감</a></li>
+                            </ul>
+                        </li>
+                        <li><a th:href="@{/diagnose}">병해진단</a></li>
+                        <li><a th:href="@{/board/list}">게시판</a></li>
+                        <li><a th:href="@{/qna/list}">Q&amp;A</a></li>
+                        <li class="dropdown">
+                            <a href="#">
+                                <span sec:authorize="isAuthenticated()">
+                                <span th:text="${session.username}"></span>님
+                            </span>
+                                <span sec:authorize="isAnonymous()">방문객</span>
+                                <i class="bi bi-chevron-down toggle-dropdown"></i>
+                            </a>
+                            <ul>
+                                <li sec:authorize="isAnonymous()"><a th:href="@{/Login}">로그인</a></li>
+                                <li sec:authorize="isAnonymous()"><a th:href="@{/User/Register}">회원가입</a></li>
+                                <li sec:authorize="isAuthenticated()"><a th:href="@{/User/Update}">회원수정</a></li>
+                                <li sec:authorize="isAuthenticated()"><a th:href="@{/Logout}">로그아웃</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+                </nav>
+
+                <!-- 마이페이지 버튼 -->
+                <a th:href="${#authentication.isAuthenticated() ? '/User/MyPage':'/User/Login'}"
+                   class="btn-getstarted">
+                    마이페이지
+                </a>
+            </div>
+        </div>
+
+    </header>
+</div>
+</body>
+</html>

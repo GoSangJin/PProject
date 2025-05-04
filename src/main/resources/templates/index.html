@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}" xmlns:font-weight="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Index - PProject.com</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+
+  <!-- Favicons -->
+  <link href="/assets/img/favicon.png" rel="icon">
+  <link href="/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,800;0,700;0,900;1,100;1,300;1,400;1,800;1,700;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,800;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,800;1,600;1,700;1,800;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,800;0,700;1,300;1,400;1,800;1,700&display=swap" rel="stylesheet">
+
+
+  <!-- Vendor CSS Files -->
+  <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="/assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="/assets/css/main.css" rel="stylesheet">
+
+
+  <style>
+
+    div {
+      display: block;
+      unicode-bidi: isolate;
+    }
+
+    .link-wrap ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      padding: 0;
+      justify-content: space-between; /* 간격을 균등하게 배분 */
+      margin: 0; /* 기본 여백 제거 */
+    }
+
+    .link-wrap li {
+      width: calc(50% - 20px); /* 두 개의 요소가 가로로 배치되며, 양쪽에 간격을 둡니다. */
+      margin: 10px; /* 각 li 요소 간의 간격 */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-radius: 10px;
+      background-color: white;
+      padding: 10px;
+      height: 100px; /* 고정된 높이 설정 */
+      position: relative;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      overflow: hidden; /* 내용이 넘칠 경우 숨김 처리 */
+    }
+
+    .link-wrap li:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .link-wrap a {
+      text-decoration: none;
+      color: inherit;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .link-wrap img {
+      width: 50px;
+      height: 50px;
+    }
+
+    .link-wrap span {
+      color: #333; /* 텍스트 색상 */
+      font-size: 0.9rem; /* 텍스트 크기 */
+      font-weight: bold; /* 텍스트 두께 */
+      text-align: center; /* 텍스트 중앙 정렬 */
+    }
+
+    /* 제목 부분(주요서비스) */
+    .title-wrap {
+      flex: 1;
+      min-width: 200px; /* 최소 넓이를 설정해 반응형 조정 */
+      margin-bottom: 20px;
+    }
+
+    .title-wrap p {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .title-wrap .hidden-mo {
+      font-size: 1rem;
+      color: #666;
+      margin-top: 5px;
+    }
+
+    /* 컨테이너 기본 설정 */
+    .container {
+      display: flex;
+      justify-content: space-between; /* 제목과 서비스 메뉴를 양쪽 끝에 배치 */
+      align-items: center; /* 제목과 서비스 메뉴를 수직으로 가운데 정렬 */
+      flex-wrap: wrap; /* 반응형을 위한 wrap 설정 */
+      margin-top: 20px;
+    }
+
+    /* 서비스 메뉴 중앙 정렬 */
+    .service-menu {
+      display: flex;
+      flex: 2; /* 서비스 메뉴가 제목보다 넓게 차지하도록 비율 설정 */
+      justify-content: center;
+      flex-direction: column; /* 수직 정렬 */
+      align-items: center; /* 중앙 정렬 */
+    }
+
+    .featured-services {
+      display: flex;
+      justify-content: center; /* 서비스 메뉴들 수평 중앙 정렬 */
+      flex-direction: row; /* 수평 정렬 */
+      flex-wrap: wrap; /* 줄바꿈 허용 */
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .featured-services li {
+      display: flex; /* 수평 정렬을 위해 flex 사용 */
+      flex-direction: row; /* 이미지와 텍스트를 가로로 정렬 */
+      align-items: center; /* 수직 중앙 정렬 */
+      margin: 10px; /* 각 메뉴 간 간격 */
+    }
+
+    .featured-services li img {
+      width: 60px; /* 모든 이미지 동일한 크기 */
+      height: 60px;
+      margin-right: 10px; /* 이미지와 텍스트 간의 간격 */
+    }
+
+    .featured-services li span {
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #333;
+      display: inline-block;
+      text-align: center;
+    }
+
+
+    .text-wrap > span {
+      display: block;
+      color: #FFF !important;  /* 필요시 사용 */
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 0.7;  /* 행간을 줄이기 위해 값을 조정 */
+      margin: 50px 0 10px 60px;  /* 위쪽 마진을 10px로 줄임 */
+      text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.8);  /* 더 뿌옇게 설정 */
+    }
+
+    .text-wrap > p {
+      color: #FFF;
+      /* font-family: PyeongChang Peace; */
+      font-size: 50px;
+      font-weight: 700;
+      line-height: 1.5;  /* 행간을 줄이기 위해 값을 조정 */
+      letter-spacing: -2.8px;
+      margin: 5px 60px;  /* 위쪽 마진을 5px로 줄임 */
+      text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.8);  /* 더 뿌옇게 설정 */
+    }
+
+
+
+
+    @media (max-width: 769px) {
+      .container {
+        flex-direction: column; /* 주요 서비스와 서비스 메뉴를 수직으로 정렬 */
+        align-items: center; /* 중앙 정렬 */
+      }
+
+      .link-title{
+        text-align: center;
+      }
+
+      .title-wrap {
+        text-align: center; /* 제목과 설명을 가운데 정렬 */
+        margin-bottom: 20px; /* 간격 유지 */
+      }
+
+      .title-wrap p,
+      .title-wrap .hidden-mo {
+        margin: 0; /* 기본 여백 제거 */
+        text-align: center; /* 제목과 설명을 가운데 정렬 */
+      }
+      .title-wrap p{
+        font-size: 1.5rem;
+      }
+
+      .title-wrap .hidden-mo{
+        font-size: 0.9rem;
+        text-align: center;
+      }
+
+      .title-wrap .hidden-mo br {
+        display: none; /* 작은 화면에서 <br> 숨김 */
+      }
+
+      .service-menu {
+        display: flex;
+        flex-direction: row; /* 수직 정렬 */
+        align-items: center; /* 중앙 정렬 */
+        margin: 0;
+        padding:0 ;
+      }
+
+      .featured-services {
+        display: flex; /* 수평 정렬을 위해 flex 사용 */
+        flex-wrap: wrap; /* 필요에 따라 줄 바꿈 가능 */
+        justify-content: center; /* 중앙 정렬 */
+        list-style: none; /* 기본 목록 스타일 제거 */
+        padding: 0; /* 기본 패딩 제거 */
+        margin: 0 0 0 40px; /* 기본 마진 제거 */
+      }
+
+      .featured-services li {
+        display: flex; /* 수평 정렬을 위해 flex 사용 */
+        flex-direction: row; /* 이미지와 텍스트를 수평으로 정렬 */
+        align-items: center; /* 수직 중앙 정렬 */
+
+      }
+
+      .featured-services li img {
+        width: 30px; /* 모든 이미지 동일한 크기 */
+        height: 30px; /* 모든 이미지 동일한 크기 */
+        margin-left: 15px; /* 이미지와 텍스트 간 간격 조정 */
+      }
+
+      .featured-services li span {
+        font-size: 0.9rem;
+        font-weight: bold;
+        color: #333;
+        display: flex; /* 수직 중앙 정렬을 위해 flex 사용 */
+        justify-content: center; /* 중앙 정렬 */
+        text-align: center; /* 스팬 텍스트를 가운데 정렬 */
+      }
+
+
+    }
+
+
+  </style>
+
+  <script>
+    function adjustDivWidth() {
+      const targetDiv = document.querySelector('.col-md-2'); // 타겟 div 선택
+      if (window.innerWidth <=767) {
+        targetDiv.style.width = '100%'; // 768px 이하일 때 너비를 100%로 설정
+      } else {
+        targetDiv.style.width = '300px'; // 기본 너비로 설정
+      }
+    }
+
+    // 페이지 로드 시 및 창 크기 조정 시 함수 실행
+    window.addEventListener('load', adjustDivWidth);
+    window.addEventListener('resize', adjustDivWidth);
+  </script>
+</head>
+
+<body class="index-page">
+
+<th:block layout:fragment="content">
+  <main class="main">
+    <!-- 메인페이지 상단 -->
+    <section id="main" class="main section" data-aos="fade-up" style="position: relative; margin-top:  -60px;">
+      <div class="container-fluid p-0">
+        <div class="row justify-content-center">
+          <!-- 왼쪽 이미지 (세로 길이 작게 설정, 둥근 모서리 추가) -->
+          <div class="col-md-7 col-lg-7 p-0" style="position: relative;">
+            <img src="/assets/img/main/농촌이미지02.svg" alt="농촌 이미지" class="img-fluid w-100"
+                 style="height: 500px; object-fit: cover; border-top-left-radius: 20px; border-bottom-left-radius: 20px;">
+            <div class="text-wrap" style="position: absolute; top: 20px; left: 20px; color: white; z-index: 1;">
+              <span>농촌지원/교육 플랫폼</span>
+              <p>배움의 씨앗을 심고<br class="hidden-pc"> 미래를 키우다</p>
+            </div>
+          </div>
+
+
+          <!-- 오른쪽 초록색 배경과 흰색 글씨 (둥근 모서리 추가) -->
+          <div class="col-md-2 col-lg-2 d-flex align-items-center"
+               style="background-color: #003300; color: white; padding: 0; border-top-right-radius: 20px;
+     border-bottom-right-radius: 20px; justify-content: center; height: 500px; width:300px"> <!-- 높이를 고정 -->
+            <div style="border-radius: 10px; padding: 20px; width: 300px; height: 500px;"> <!-- 너비와 높이 고정 -->
+              <div class="link-title" style="color: #ffffff;">
+                <h3 style="font-weight: bold; color: #ffffff;">종합정보</h3>
+                <p style="margin-bottom: 20px;">주요정보를 확인해보세요</p>
+                <hr style="border: 1px; margin-bottom: 30px;">
+              </div>
+              <div class="link-wrap">
+                <ul style="padding: 0;"> <!-- 패딩을 제거하여 항목들 정렬 -->
+                  <li style="height: 100px;"> <!-- 고정된 높이 설정 -->
+                    <a href="/document/list" style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                      <img src="/assets/img/main/icon_document_edu.svg" alt="공문정보">
+                      <span>교육/지원</span>
+                    </a>
+                  </li>
+                  <li style="height: 100px;">
+                    <a href="/plantation/list" style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                      <img src="/assets/img/main/icon_plantation.svg" alt="재배정보">
+                      <span>재배정보</span>
+                    </a>
+                  </li>
+                  <li style="height: 100px;">
+                    <a href="/fruit/list" style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                      <img src="/assets/img/main/icon_fruit.svg" alt="병해도감">
+                      <span>병해도감</span>
+                    </a>
+                  </li>
+                  <li style="height: 100px;">
+                    <a href="/diagnose" style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                      <img src="/assets/img/main/icon_diagnose.svg" alt="병해진단">
+                      <span>병해진단</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 주요서비스 섹션 -->
+        <div class="container mt-4 mb-3">
+          <!-- 주요서비스 -->
+          <div class="title-wrap">
+            <p class="mb-2">주요서비스</p>
+            <span class="hidden-mo">로그인하시면 더 많은 서비스를 이용하실 수 <br>있습니다.</span>
+          </div>
+
+          <!-- 서비스 메뉴들 -->
+          <div class="service-menu">
+            <ul class="featured-services d-flex flex-wrap justify-content-center">
+              <li class="guide">
+                <a href="/guide/info" class="guide_step">
+                  <img src="/assets/img/main/icon_guide.svg" alt="가이드">
+                  <span>가이드</span>
+                </a>
+              </li>
+              <li class="experience">
+                <a href="/experience/list">
+                  <img src="/assets/img/main/icon_experience.svg" alt="체험정보">
+                  <span>체험정보</span>
+                </a>
+              </li>
+              <li class="event">
+                <a href="/event/list">
+                  <img src="/assets/img/main/icon_event.svg" alt="행사정보">
+                  <span>행사정보</span>
+                </a>
+              </li>
+              <li class="board">
+                <a href="/board/list">
+                  <img src="/assets/img/main/icon_board.svg" alt="게시판">
+                  <span>게시판</span>
+                </a>
+              </li>
+              <li class="QnA">
+                <a href="/qna/list">
+                  <img src="/assets/img/main/icon_qna.svg" alt="자주묻는질문">
+                  <span>Q&A</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+</th:block>
+
+</body>
+
+</html>

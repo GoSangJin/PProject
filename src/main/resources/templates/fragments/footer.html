@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://ww.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+        /* 전체 페이지의 기본 여백 설정 */
+        body {
+            margin: 0; /* 페이지 여백 제거 */
+            padding: 0; /* 페이지 패딩 제거 */
+        }
+
+        /* 푸터 스타일 */
+        #footer {
+            color: #333333;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            margin-top: 30px;
+            z-index: 1000;
+            text-align: center;
+            background-color: #f0f0f0;
+            box-sizing: border-box;
+            max-width: 500px; /* 최대 너비 500px */
+            margin-left: auto; /* 중앙 정렬 */
+            margin-right: auto; /* 중앙 정렬 */
+        }
+
+
+        /* 푸터와 페이지 내용 사이의 간격 */
+        body::before {
+            content: "";
+            display: block;
+            height: 1rem; /* 푸터와 내용 간의 간격 */
+            background-color: #f0f0f0; /* 푸터와 동일한 배경색으로 간격 추가 */
+        }
+
+        /* 로고 크기와 텍스트 크기 조정 */
+        .footer-about img {
+            width: 80px; /* 큰 화면에서 로고 크기를 줄임 */
+            height: auto;
+        }
+
+        /* 텍스트 스타일, 기본 폰트 크기 및 행간 설정 */
+        .footer-contact {
+            font-size: 0.5rem; /* 기본 폰트 크기 */
+            line-height: 1.2; /* 기본 행간 */
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 중앙 정렬 */
+        }
+
+        /* 텍스트 넘칠 때 수평으로 정렬 */
+        .footer-contact p, .footer-contact span {
+            margin: 0; /* 여백 제거 */
+            overflow: hidden; /* 넘치는 내용 숨김 */
+            text-overflow: ellipsis; /* 생략 기호(...) 표시 */
+            white-space: nowrap; /* 줄바꿈 방지 */
+        }
+
+        /* 화면이 500px 이하일 때 반응형 설정 */
+        @media (max-width: 500px) {
+            #footer {
+                padding: 0.3rem 0;
+                max-width: 100%; /* 500px 이하에서는 최대 너비를 100%로 변경 */
+            }
+
+            .footer-about img {
+                width: 40px; /* 작은 화면에서는 로고 크기를 줄임 */
+            }
+
+            .footer-contact {
+                font-size: 8px; /* 작은 화면에서는 글자 크기 줄이기 */
+                line-height: 0.8; /* 작은 화면에서 행간 줄이기 */
+            }
+        }
+
+        /* 더 작은 화면일 때 (예: 400px 이하) */
+        @media (max-width: 400px) {
+            .footer-about img {
+                width: 30px; /* 더 작은 화면에서는 로고 크기를 더 줄임 */
+            }
+
+            .footer-contact {
+                font-size: 5px; /* 더 작은 화면에서는 글자 크기 더 줄이기 */
+                line-height: 0.5; /* 더 작은 화면에서 행간 더 줄이기 */
+            }
+        }
+
+
+    </style>
+
+</head>
+<body>
+<div th:fragment="footer">
+    <footer id="footer" class="footer" style="background-color: #f0f0f0; padding-top: 0;">
+        <div class="container footer-top" style="text-align: center;">
+            <div class="row gy-4">
+                <div class="col-lg-8 footer-about" style="display: inline-block; text-align: left;">
+                    <a th:href="@{/}" class="d-flex align-items-center">
+                        <!-- 이미지 경로를 적절한 이미지 URL로 변경하세요 -->
+                        <img src="/assets/img/main/green_logo.svg" alt="모세(모든세대)" style="width: 150px; height: auto;">
+                    </a>
+                    <div class="footer-contact pt-1">
+                        <p class="text">경기도 부천시 부천로29번길 7, 12층(심곡동)</p>
+                        <p class="text">귀농귀촌 종합상담 : 1688-5004 (상담시간 09:00-18:00 / 점심시간 12:00-13:00)</p>
+                        <p class="sub-text mb-3">Copyright ⓒ 귀농귀촌통합플랫폼. All Rights Reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+<!-- Scroll Top -->
+<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
+    <i class="bi bi-arrow-up-short"></i></a>
+
+<!-- Preloader -->
+<div id="preloader"></div>
+
+
+</body>
+</html>
