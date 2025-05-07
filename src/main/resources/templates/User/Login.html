@@ -8,31 +8,23 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>로그인-기아팬</title>
-    <script type="text/javascript" src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js" charset="utf-8"></script>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
-    <meta content="" name="description">
-    <meta content="" name="keywords">
+    <!-- 외부 스크립트 -->
+    <script src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js" charset="utf-8"></script>
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 
     <!-- Favicons -->
     <link href="/assets/img/favicon.png" rel="icon">
     <link href="/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com" rel="preconnect">
-    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
-
-    <!-- Vendor CSS Files -->
+    <!-- Fonts & Vendor CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-    <link href="/assets/vendor/aos/aos.css" rel="stylesheet">
-    <link href="/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-    <link href="/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
 
-    <!-- Main CSS File -->
+    <!-- Main & header CSS/JS -->
     <link href="/assets/css/main.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+    <script th:src="@{/js/header.js}" defer></script>
     <style>
         /* 기본 레이아웃 스타일 (화면이 넓을 때) */
 
@@ -89,13 +81,17 @@
             text-decoration: none; /* 링크의 기본 밑줄 제거 */
         }
 
-
-
-        .btn {
-            height: 2.5rem; /* 로그인 버튼의 기본 높이 */
-            margin: 0; /* 버튼 간의 좌우 간격 제거 */
-            width: 100%; /* 버튼 폭을 전체 너비로 설정 */
-        }
+              /* 로그인 폼 내부 버튼만 전체폭 적용 */
+              form .btn {
+                 height: 2.5rem;
+                  margin: 0;
+                  width: 100%;
+              }
+              /* 헤더 드롭다운 버튼은 기본 부트스트랩 스타일 유지 */
+              header .btn {
+                  width: auto !important;
+                 height: auto !important;
+              }
 
         .responsive-span {
             font-size: 0.8rem; /* 원하는 크기로 조정 */
@@ -108,6 +104,70 @@
             font-size: 0.5rem; /* h1 크기 조정 (조금 작게) */
         }
 
+        form .btn {
+            height: 2.5rem;
+            margin: 0;
+            width: 100%;
+        }
+
+        /* === ① 추가: Google 버튼 스타일 (라인 약  sixty~seventy) === */
+        .gsi-material-button {
+            user-select: none;
+            background-color: #fff;
+            border: 1px solid #747775;
+            border-radius: 20px;
+            box-sizing: border-box;
+            font-family: 'Roboto', arial, sans-serif;
+            font-size: 14px;
+            height: 2.5rem;           /* 2.5rem = 로그인 버튼 높이와 동일 */
+            letter-spacing: 0.25px;
+            outline: none;
+            overflow: hidden;
+            padding: 0 12px;
+            position: relative;
+            text-align: center;
+            transition: background-color .218s, border-color .218s, box-shadow .218s;
+            vertical-align: middle;
+            white-space: nowrap;
+            width: 100%;             /* 로그인 버튼과 동일하게 전체폭 */
+            max-width: none;         /* a.btn 처럼 자동 폭 조정 하지 않음 */
+            cursor: pointer;
+        }
+        .gsi-material-button-icon {
+            height: 20px;
+            margin-right: 12px;
+            width: 20px;
+        }
+        .gsi-material-button-content-wrapper {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+        }
+        .gsi-material-button-contents {
+            flex-grow: 1;
+            font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .gsi-material-button-state {
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            opacity: 0;
+            transition: opacity .218s;
+        }
+        .gsi-material-button:not(:disabled):hover {
+            box-shadow: 0 1px 2px rgba(60,64,67,.30), 0 1px 3px rgba(60,64,67,.15);
+        }
+        .gsi-material-button:not(:disabled):hover .gsi-material-button-state {
+            background-color: #303030;
+            opacity: 8%;
+        }
+        .gsi-material-button:not(:disabled):active .gsi-material-button-state,
+        .gsi-material-button:not(:disabled):focus .gsi-material-button-state {
+            background-color: #303030;
+            opacity: 12%;
+        }
 
     </style>
 
@@ -132,50 +192,58 @@
 
         <!-- Services 2 Section -->
         <section id="services-2" class="services-2 section">
-
             <div class="container mb-3">
                 <div class="row justify-content-center" data-aos="fade-up">
                     <div class="col-md-6 col-lg-6">
-
-                        <h2 style="font-weight: bold; color: #222;  line-height: 4rem; margin-bottom: 3rem;">회원 로그인</h2>
+                        <h2 style="font-weight: bold; margin-bottom: 3rem;">회원 로그인</h2>
 
                         <form th:action="@{/Login}" method="post">
-                            <!--아이디-->
-                            <div class="input-wrap">
-                                <label for="userid" style="margin-bottom: 1rem"><strong>아이디</strong></label>
-                                <input type="text" id="userid" name="userid" required
-                                       placeholder="아이디를 입력하세요"
-                                       onfocus="this.placeholder = ''" onblur="this.placeholder = '아이디를 입력하세요'">
+                            <!-- 아이디 -->
+                            <div class="input-wrap mb-3">
+                                <label for="userid"><strong>아이디</strong></label>
+                                <input type="text" id="userid" name="userid" required placeholder="아이디를 입력하세요">
                             </div>
-
-                            <!--비밀번호-->
-                            <div class="input-wrap mt-3">
-                                <label for="password" style="margin-bottom: 1rem"><strong>비밀번호</strong></label>
-                                <input type="password" id="password" name="password" required
-                                       placeholder="비밀번호를 입력하세요"
-                                       onfocus="this.placeholder = ''" onblur="this.placeholder = '비밀번호를 입력하세요'">
+                            <!-- 비밀번호 -->
+                            <div class="input-wrap mb-3">
+                                <label for="password"><strong>비밀번호</strong></label>
+                                <input type="password" id="password" name="password" required placeholder="비밀번호를 입력하세요">
                             </div>
-
-                            <!--아이디찾기/비밀번호찾기/회원가입-->
-                            <ul class="link-wrap">
-                                <li>
-                                    <a href="#" onclick="location.href='/user/find-userid'">아이디 찾기</a> |
-                                </li>
-                                <li>
-                                    <a href="#" onclick="location.href='/user/find-password'">비밀번호 찾기</a> |
-                                </li>
-                                <li>
-                                    <a href="#" onclick="location.href='/User/Register'">회원가입</a>
-                                </li>
+                            <!-- 링크 -->
+                            <ul class="link-wrap mb-3">
+                                <li><a href="#" onclick="location.href='/User/Find_Userid'">아이디 찾기</a> |</li>
+                                <li><a href="#" onclick="location.href='/user/find-password'">비밀번호 찾기</a> |</li>
+                                <li><a href="#" onclick="location.href='/User/Register'">회원가입</a></li>
                             </ul>
 
-                            <!--로그인-->
-                            <div style="display: flex; justify-content: flex-end; width: 100%; margin-top: 1rem">
+                            <!-- 로그인 버튼 -->
+                            <div style="display:flex; justify-content:flex-end; width:100%; margin-top:0.2rem">
                                 <button type="submit" class="btn btn-success rounded-pill">로그인</button>
                             </div>
-                            <div style="display: flex; justify-content: flex-end; width: 100%; margin-top: 1rem">
-                                <a href="/oauth2/authorization/google" class="btn btn-danger rounded-pill" style="width: 100%;">Google로 로그인</a>
+
+                            <div style="display:flex; justify-content:flex-end; width:100%; margin-top:0.2rem">
+                                <button
+                                        type="button"
+                                        class="gsi-material-button"
+                                        onclick="location.href='/oauth2/authorization/google'">
+                                    <div class="gsi-material-button-state"></div>
+                                    <div class="gsi-material-button-content-wrapper">
+                                        <div class="gsi-material-button-icon">
+                                            <!-- Google 로고 SVG -->
+                                            <svg viewBox="0 0 48 48" style="display:block;">
+                                                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                                                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                                                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                                                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                                                <path fill="none" d="M0 0h48v48H0z"/>
+                                            </svg>
+                                        </div>
+                                        <span class="gsi-material-button-contents">Sign in with Google</span>
+                                        <span style="display:none">Sign in with Google</span>
+                                    </div>
+                                </button>
                             </div>
+                            <!-- === ② 끝 === -->
+
                         </form>
                     </div>
                 </div>

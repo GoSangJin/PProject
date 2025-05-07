@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.IllformedLocaleException;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class UserController {
     }
 
 
-    @GetMapping("/User/Register")
+    @GetMapping("/User/Register") // 회원가입 페이지
     public String registerForm(Model model) {
         model.addAttribute("data", new UserDTO());
         return "User/Register";
@@ -54,20 +55,19 @@ public class UserController {
             return "User/Register"; // 다시 회원가입 페이지로 이동
         }
 
-        return "/User/Login"; // 회원가입 성공 시 메인 페이지로 리다이렉트
+        return "/User/Login"; // 회원가입 성공 시 메인 페이지로
     }
 
-    @GetMapping("/User/First_Social_Login")
+    @GetMapping("/User/First_Social_Login") // 최초 소셜 로그인 이용자 정보 입력 페이지
     public String firstSocialLoginForm(Model model, HttpSession session) {
         @SuppressWarnings("unchecked")
         Map<String, Object> oauth2User = (Map<String, Object>) session.getAttribute("oauth2User");
 
         UserDTO data = new UserDTO();
-        data.setUsername((String) oauth2User.get("name"));    // line 30
-        data.setEmail((String) oauth2User.get("email"));      // line 31
-        // ★ 자동 설정을 위해 아래 두 줄을 추가하세요 ( 바로 위 email 설정 다음에 )
-        data.setRoleType(RoleType.user);                      // line 32
-        data.setSocialType(SocialType.google);                // line 33
+        data.setUsername((String) oauth2User.get("name"));
+        data.setEmail((String) oauth2User.get("email"));
+        data.setRoleType(RoleType.user);
+        data.setSocialType(SocialType.google);
 
         model.addAttribute("data", data);
         return "User/First_Social_Login";
@@ -75,13 +75,29 @@ public class UserController {
 
     @PostMapping("/User/First_Social_Login")
     public String firstSocialLoginSubmit(@ModelAttribute("data") UserDTO userDTO, HttpSession session) {
-        // ★ 신규 소셜 유저 등록: birthday, postcode, address, detailAddress, extraAddress만 채워져 있고
-        //    username, email, roleType, socialType은 Hidden 필드로 이미 채워져 있음
         userService.register(userDTO);
         session.removeAttribute("oauth2User");
         return "redirect:/";
     }
 
+    @GetMapping("/User/Find_Userid") // 아이디 찾기 페이지
+    public String findUsernameForm() {
+        return "User/Find_Userid";
+    }
+
+    @PostMapping("/User/Find_Userid") // 아이디 찾기 요청 처리
+    public String findUsername(@RequestParam String email,
+                               @RequestParam String birthday,
+                               @RequestParam String username,
+                               Model model) {
+        String userid = userService.findUseridByEmailAndBirthdayAndUsername(email, birthday, username);
+        if (userid != null) {
+            model.addAttribute("message", "당신의 아이디는: " + userid);
+        } else {
+            model.addAttribute("message", "정보와 일치하는 계정이 없습니다.");
+        }
+        return "User/Result_Userid"; // 결과 페이지
+    }
 
 }
 

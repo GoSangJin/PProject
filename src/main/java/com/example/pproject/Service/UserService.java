@@ -86,4 +86,9 @@ public class UserService implements UserDetailsService {
 
         userRepository.save(userEntity);
     }
+
+    public String findUseridByEmailAndBirthdayAndUsername(String email, String birthday, String username) {
+        UserEntity userEntity = userRepository.findByEmailAndBirthdayAndUsername(email, birthday, username);
+        return userEntity != null ? userEntity.getUserid() : null;
+    }
 }
