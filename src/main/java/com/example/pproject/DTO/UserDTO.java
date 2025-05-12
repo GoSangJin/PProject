@@ -17,7 +17,7 @@ public class UserDTO {
     private String userid;                      // 아이디
     private String password;                // 비밀번호
     private String email;                      // 이메일
-    private String birthday;                // 생년 월일
+    private String birthday;                 // 생년 월일
     private String username; // 이름
     private String postcode; // 우편번호
     private String address; // 주소

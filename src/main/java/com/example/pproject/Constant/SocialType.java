@@ -6,5 +6,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum SocialType {
-    google,naver,kakao,Else
+    google,naver,kakao,nate,Else
 }

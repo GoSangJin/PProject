@@ -79,7 +79,10 @@ public class UserService implements UserDetailsService {
                 userEntity.setSocialType(SocialType.google);
             } else if (domain.startsWith("kakao")) {
                 userEntity.setSocialType(SocialType.kakao);
-            } else {
+            } else if (domain.startsWith("nate")) {
+                userEntity.setSocialType(SocialType.nate);
+            }
+            else {
                 userEntity.setSocialType(SocialType.Else);
             }
         }
@@ -87,8 +90,34 @@ public class UserService implements UserDetailsService {
         userRepository.save(userEntity);
     }
 
+    // 이메일,생일,이름으로 아이디 찾기
     public String findUseridByEmailAndBirthdayAndUsername(String email, String birthday, String username) {
         UserEntity userEntity = userRepository.findByEmailAndBirthdayAndUsername(email, birthday, username);
         return userEntity != null ? userEntity.getUserid() : null;
+    }
+
+
+    // 비밀번호 검증 메서드
+    public boolean verifyPassword(String userid, String password) {
+        UserEntity userEntity = userRepository.findByUserid(userid)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + userid));
+
+        // 저장된 비밀번호와 입력된 비밀번호 비교
+        return passwordEncoder.matches(password, userEntity.getPassword());
+    }
+
+    // 비밀번호 업데이트 메서드
+    public void updatePassword(String userid, String newPassword) {
+        UserEntity userEntity = userRepository.findByUserid(userid)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + userid));
+
+        userEntity.setPassword(passwordEncoder.encode(newPassword)); // 비밀번호 해싱
+        userRepository.save(userEntity);
+    }
+
+    public String findEmailByUseridAndUsernameAndBirthday(String userid, String username, String birthday) {
+        UserEntity userEntity = userRepository.findByUseridAndUsernameAndBirthday(userid, username, birthday)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        return userEntity.getEmail();
     }
 }

@@ -23,6 +23,7 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
 
+
     // 로그인 페이지 이동
     @GetMapping("/Login")
     public String login() {
@@ -58,6 +59,7 @@ public class UserController {
         return "/User/Login"; // 회원가입 성공 시 메인 페이지로
     }
 
+
     @GetMapping("/User/First_Social_Login") // 최초 소셜 로그인 이용자 정보 입력 페이지
     public String firstSocialLoginForm(Model model, HttpSession session) {
         @SuppressWarnings("unchecked")
@@ -80,6 +82,7 @@ public class UserController {
         return "redirect:/";
     }
 
+
     @GetMapping("/User/Find_Userid") // 아이디 찾기 페이지
     public String findUsernameForm() {
         return "User/Find_Userid";
@@ -99,5 +102,35 @@ public class UserController {
         return "User/Result_Userid"; // 결과 페이지
     }
 
+
+    @GetMapping("/User/Change_Password")
+    public String showChangePasswordPage() {return "User/Change_Password";}
+
+    @PostMapping("/User/Change_Password")
+    public String updatePassword(@RequestParam String currentPassword,
+                                 @RequestParam String newPassword,
+                                 @RequestParam String confirmPassword,
+                                 HttpSession session,
+                                 Model model) {
+        String userid = (String) session.getAttribute("userid");
+
+        if (userid == null) {
+            return "redirect:/Login";
+        }
+
+        if (!userService.verifyPassword(userid, currentPassword)) {
+            model.addAttribute("errorMessage","현재 비밀번호가 일치하지 않습니다.");
+            return "User/Change_Password";
+        }
+
+        if (!newPassword.equals(confirmPassword)) {
+            model.addAttribute("errorMessage","새 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+            return "User/Change_Password";
+        }
+
+        userService.updatePassword(userid, newPassword);
+        return "redirect:/";
+    }
 }
+
 
