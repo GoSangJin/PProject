@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 @Transactional
@@ -41,54 +42,62 @@ public class UserService implements UserDetailsService {
                 .build();
     }
 
-    public void register(UserDTO userDTO) {
-        // — 일반 회원일 경우에만 userid 중복 체크
-        if (userDTO.getUserid() != null && !userDTO.getUserid().isEmpty()) {
-            Optional<UserEntity> existingUser = userRepository.findByUserid(userDTO.getUserid());
-            if (existingUser.isPresent()) {
-                throw new IllegalStateException("이미 존재하는 회원입니다.");
+        public void register (UserDTO userDTO){
+            //이메일 형식 검증
+            String email = userDTO.getEmail();
+            Pattern emailPattern = Pattern.compile(
+                    "^[A-Za-z0-9]+([._+\\-][A-Za-z0-9]+)*@([A-Za-z0-9\\-]+\\.)+[A-Za-z]{2,}$"
+            );
+            if (!emailPattern.matcher(email).matches()) {
+                throw new IllegalStateException("이메일 형식이 잘못되었습니다.");
             }
-        }
-        // 이메일 중복은 항상 체크
-        Optional<UserEntity> existingEmail = userRepository.findByEmail(userDTO.getEmail());
-        if (existingEmail.isPresent()) {
-            throw new IllegalStateException("이미 존재하는 이메일입니다.");
-        }
 
-        UserEntity userEntity = modelMapper.map(userDTO, UserEntity.class);
-
-        // 비밀번호가 있으면 암호화, 없으면 null (소셜 유저용)
-        if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
-            userEntity.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        } else {
-            userEntity.setPassword(null);
-        }
-
-        userEntity.setRoleType(RoleType.user);
-
-        // ★ 소셜 최초 가입: DTO에 담긴 socialType을 우선 사용
-        if (userDTO.getSocialType() != null) {
-            userEntity.setSocialType(userDTO.getSocialType());
-        } else {
-            // 기존 도메인 기반 로직 보강 (gmail.com 처리 추가)
-            String email = userDTO.getEmail().toLowerCase();
-            String domain = email.contains("@") ? email.split("@")[1] : "";
-            if (domain.startsWith("naver")) {
-                userEntity.setSocialType(SocialType.naver);
-            } else if (domain.startsWith("google") || domain.startsWith("gmail")) {
-                userEntity.setSocialType(SocialType.google);
-            } else if (domain.startsWith("kakao")) {
-                userEntity.setSocialType(SocialType.kakao);
-            } else if (domain.startsWith("nate")) {
-                userEntity.setSocialType(SocialType.nate);
+            // userid 중복 체크
+            if (userDTO.getUserid() != null && !userDTO.getUserid().isEmpty()) {
+                Optional<UserEntity> existingUser = userRepository.findByUserid(userDTO.getUserid());
+                if (existingUser.isPresent()) {
+                    throw new IllegalStateException("이미 존재하는 회원입니다.");
+                }
             }
-            else {
-                userEntity.setSocialType(SocialType.Else);
+
+            //이메일 중복 체크
+            Optional<UserEntity> existingEmail = userRepository.findByEmail(userDTO.getEmail());
+            if (existingEmail.isPresent()) {
+                throw new IllegalStateException("이미 존재하는 이메일입니다.");
             }
+
+            UserEntity userEntity = modelMapper.map(userDTO, UserEntity.class);
+
+            // 비밀번호 암호화
+            if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
+                userEntity.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+            } else {
+                userEntity.setPassword(null);
+            }
+
+            userEntity.setRoleType(RoleType.user);
+
+            // 소셜 타입 설정
+            if (userDTO.getSocialType() != null) {
+                userEntity.setSocialType(userDTO.getSocialType());
+            } else {
+                String domain = userDTO.getEmail().toLowerCase().split("@")[1];
+                if (domain.startsWith("naver")) {
+                    userEntity.setSocialType(SocialType.naver);
+                } else if (domain.startsWith("google") || domain.startsWith("gmail")) {
+                    userEntity.setSocialType(SocialType.google);
+                } else if (domain.startsWith("kakao")) {
+                    userEntity.setSocialType(SocialType.kakao);
+                } else if (domain.startsWith("nate")) {
+                    userEntity.setSocialType(SocialType.nate);
+                } else {
+                    userEntity.setSocialType(SocialType.Else);
+                }
+            }
+
+            userRepository.save(userEntity);
         }
 
-        userRepository.save(userEntity);
-    }
 
     // 이메일,생일,이름으로 아이디 찾기
     public String findUseridByEmailAndBirthdayAndUsername(String email, String birthday, String username) {

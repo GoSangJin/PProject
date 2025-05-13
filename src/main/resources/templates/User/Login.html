@@ -242,7 +242,9 @@
                                     </div>
                                 </button>
                             </div>
-                            <!-- === ② 끝 === -->
+                            <div th:if="${errorMessage}" class="alert alert-danger">
+                                <span th:text="${errorMessage}"></span>
+                            </div>
 
                         </form>
                     </div>

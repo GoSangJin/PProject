@@ -54,9 +54,19 @@ public class PasswordResetController {
     }
 
     @PostMapping("/User/New_Password")
-    public String resetPassword(@RequestParam String userid, @RequestParam String newPassword) {
+    public String resetPassword(@RequestParam String userid,
+                                @RequestParam String newPassword,
+                                @RequestParam String confirmPassword,
+                                Model model) {
+        // (1) 입력값 일치 여부 확인
+        if (!newPassword.equals(confirmPassword)) {
+            model.addAttribute("userid", userid);
+            model.addAttribute("error", "비밀번호가 서로 다릅니다.");
+            return "User/New_Password";
+        }
+        // (2) 일치하면 실제 업데이트
         userService.updatePassword(userid, newPassword);
-        return "redirect:/Login"; // 로그인 페이지로 리다이렉트
+        return "redirect:/Login";
     }
 
     private String generateRandomCode() {

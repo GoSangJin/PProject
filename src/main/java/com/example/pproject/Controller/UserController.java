@@ -26,7 +26,13 @@ public class UserController {
 
     // 로그인 페이지 이동
     @GetMapping("/Login")
-    public String login() {
+    public String login(Model model, HttpSession session) {
+        // (1) 세션에서 에러 메시지 가져오기
+        String msg = (String) session.getAttribute("loginErrorMessage");
+        if (msg != null) {
+            model.addAttribute("errorMessage", msg);
+            session.removeAttribute("loginErrorMessage");
+        }
         return "User/Login";
     }
 
@@ -131,6 +137,8 @@ public class UserController {
         userService.updatePassword(userid, newPassword);
         return "redirect:/";
     }
+
+
 }
 
 

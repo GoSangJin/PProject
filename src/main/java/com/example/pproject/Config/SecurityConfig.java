@@ -1,9 +1,11 @@
 package com.example.pproject.Config;
 
 import com.example.pproject.Service.CustomOAuth2UserService;
+import com.example.pproject.Service.UserService;                           // ← (1) 추가
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;  // ← (2) 추가
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -17,15 +19,31 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 @EnableWebSecurity
 public class SecurityConfig {
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final UserService userService;
+
 
     @Bean
-    PasswordEncoder passwordEncoder() {
+    public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userService);
+        provider.setPasswordEncoder(passwordEncoder());
+        // 사용자 없는 경우 UsernameNotFoundException 그대로 던지기
+        provider.setHideUserNotFoundExceptions(false);
+        return provider;
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        // (5) 커스텀 DaoAuthenticationProvider 등록
+        http.authenticationProvider(daoAuthenticationProvider());
+
         // 1) URL 접근 권한 설정
         http.authorizeHttpRequests(auth -> {
             auth.requestMatchers("/test1", "/test2").permitAll();
@@ -57,17 +75,17 @@ public class SecurityConfig {
                 .defaultSuccessUrl("/", true)
                 .permitAll()
                 .successHandler(customAuthenticationSuccessHandler)
+                .failureHandler(customAuthenticationFailureHandler)
         );
 
-        // 3) 소셜 로그인 설정 (수정된 부분)
+        // 3) 소셜 로그인 설정
         http.oauth2Login(oauth2 -> oauth2
                 .loginPage("/Login")
                 .userInfoEndpoint(userInfo ->
                         userInfo.userService(customOAuth2UserService)
                 )
-                .successHandler(customAuthenticationSuccessHandler)        // 폼 로그인과 동일 핸들러 사용
+                .successHandler(customAuthenticationSuccessHandler)
                 .failureHandler((request, response, exception) -> {
-                    // user_not_registered 에러는 회원가입 페이지로
                     if (exception instanceof OAuth2AuthenticationException oae
                             && "user_not_registered".equals(oae.getError().getErrorCode())) {
                         response.sendRedirect("/User/First_Social_Login");
@@ -77,7 +95,7 @@ public class SecurityConfig {
                 })
         );
 
-        // 4) (기존) 인증 진입점 처리: 로그인 안 된 상태로 보호된 URL 접근 시
+        // 4) 인증 진입점 처리
         http.exceptionHandling(e -> e
                 .authenticationEntryPoint((request, response, authException) -> {
                     response.sendRedirect("/Login");
